@@ -105,18 +105,21 @@ class Sentence():
         """
         Returns the set of all cells in self.cells known to be mines.
         """
-        mines_cells =set()
+        mines_cells = set()
         if len(self.cells) == self.count:
-            return self.cells
-
+            for cell in self.cells:
+                mines_cells.add(cell)
+        return mines_cells
 
     def known_safes(self):
         """
         Returns the set of all cells in self.cells known to be safe.
         """
+        safes_cells = set()
         if self.count == 0:
-            return self.cells
-
+            for cell in self.cells:
+                safes_cells.add(cell)
+        return safes_cells
 
     def mark_mine(self, cell):
         """
@@ -130,7 +133,6 @@ class Sentence():
         if ((cell in self.cells) and (len(self.cells) > 1)):
             self.cells.discard(cell)
             self.count -= 1
-
 
     def mark_safe(self, cell):
         """
@@ -209,7 +211,7 @@ class MinesweeperAI():
         # Be sure to only include cells whose state is still undetermined in the sentence.
 
         #   #Loop over all cells within one row and column
-        ai_sentence = Sentence(cells=set(),count=int)
+        ai_sentence = Sentence(cells=set(), count=int)
         ai_sentence.count = count
         for i in range(cell[0] - 1, cell[0] + 2):
             for j in range(cell[1] - 1, cell[1] + 2):
@@ -234,7 +236,7 @@ class MinesweeperAI():
         
         for sentence in self.knowledge:
             new_safes = sentence.known_safes()
-            if (new_safes) == None:
+            if len(new_safes) == 0:
                 if sentence.known_mines():
                     for mine_cell in sentence.known_mines():
                         self.mines.add((mine_cell))
@@ -243,8 +245,6 @@ class MinesweeperAI():
                     if safe_cell not in self.safes:
                         self.safes.add((safe_cell))
             
-        
-
         # 5) add any new sentences to the AI's knowledge base
         # if they can be inferred from existing knowledge
         # If, based on any of the sentences in self.knowledge, new sentences can be inferred
@@ -268,7 +268,6 @@ class MinesweeperAI():
                             for mine_cell in sentence2.known_mines():
                                 self.mines.add((mine_cell))
 
-
     def make_safe_move(self):
         """
         Returns a safe cell to choose on the Minesweeper board.
@@ -278,7 +277,7 @@ class MinesweeperAI():
         This function may use the knowledge in self.mines, self.safes
         and self.moves_made, but should not modify any of those values.
         """
-        if len(self.safes) != 0:
+        if len(self.safes) > 0:
             for cell in self.safes:
                 if cell not in self.moves_made:
                     return cell
@@ -306,7 +305,6 @@ class MinesweeperAI():
         else:
             return None
 
-
     def possible_mine(self):
         """
         return a set of cells that may be mines
@@ -318,7 +316,6 @@ class MinesweeperAI():
                     if cell not in self.mines:
                         possible_mines.add(cell)
         return possible_mines
-
 
     def ai_minesweeper_print(self):
         print("print Knowlegde ")
