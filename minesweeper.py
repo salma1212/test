@@ -251,7 +251,6 @@ class MinesweeperAI():
         # Note that any time that you make any change to your AI’s knowledge,
         # it may be possible to draw new inferences that weren’t possible before.
         # Be sure that those new inferences are added to the knowledge base if it is possible to do so.
-        # ###while loop to refresh knowledge after 
         
         for sentence1 in self.knowledge:
             for sentence2 in self.knowledge:
@@ -267,7 +266,18 @@ class MinesweeperAI():
                         if sentence2.known_mines():
                             for mine_cell in sentence2.known_mines():
                                 self.mark_mine(mine_cell)
- 
+        
+        for sentence in self.knowledge:
+            new_safes = sentence.known_safes()
+            if len(new_safes) > 0:
+                for safe_cell in new_safes:
+                    if safe_cell not in self.safes:
+                        self.mark_safe(safe_cell)
+            new_mines = sentence.known_mines()
+            if len(new_mines) > 0:
+                for mine_cell in new_mines:
+                    self.mark_mine(mine_cell)
+
     def make_safe_move(self):
         """
         Returns a safe cell to choose on the Minesweeper board.
