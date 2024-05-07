@@ -233,17 +233,18 @@ class MinesweeperAI():
         # 4) mark any additional cells as safe or as mines if it can be concluded based on the AI's knowledge base
         # If, based on any of the sentences in self.knowledge,
         # new cells can be marked as safe or as mines, then the function should do so.
+        # ###add a loop until knowledge is the same
         
         for sentence in self.knowledge:
             new_safes = sentence.known_safes()
             if len(new_safes) == 0:
                 if sentence.known_mines():
                     for mine_cell in sentence.known_mines():
-                        self.mines.add((mine_cell))
+                        self.mark_mine(mine_cell)
             else:
                 for safe_cell in new_safes:
                     if safe_cell not in self.safes:
-                        self.safes.add((safe_cell))
+                        self.mark_safe(safe_cell)
             
         # 5) add any new sentences to the AI's knowledge base
         # if they can be inferred from existing knowledge
@@ -253,6 +254,8 @@ class MinesweeperAI():
         # Note that any time that you make any change to your AI’s knowledge,
         # it may be possible to draw new inferences that weren’t possible before.
         # Be sure that those new inferences are added to the knowledge base if it is possible to do so.
+        # ###while loop to refresh knowledge after 
+        
         for sentence1 in self.knowledge:
             for sentence2 in self.knowledge:
                 if sentence2 == sentence1:
@@ -263,11 +266,11 @@ class MinesweeperAI():
                         sentence2.count -= sentence1.count
                         if sentence2.known_safes():
                             for safe_cell in sentence2.known_safes():
-                                self.safes.add((safe_cell))
+                                self.mark_safe(safe_cell)
                         if sentence2.known_mines():
                             for mine_cell in sentence2.known_mines():
-                                self.mines.add((mine_cell))
-
+                                self.mark_mine(mine_cell)
+ 
     def make_safe_move(self):
         """
         Returns a safe cell to choose on the Minesweeper board.
