@@ -233,19 +233,16 @@ class MinesweeperAI():
         # 4) mark any additional cells as safe or as mines if it can be concluded based on the AI's knowledge base
         # If, based on any of the sentences in self.knowledge,
         # new cells can be marked as safe or as mines, then the function should do so.
-        # ###add a loop until knowledge is the same
         
         for sentence in self.knowledge:
             new_safes = sentence.known_safes()
-            if len(new_safes) == 0:
-                if sentence.known_mines():
-                    for mine_cell in sentence.known_mines():
-                        self.mark_mine(mine_cell)
-            else:
+            if len(new_safes) > 0:
                 for safe_cell in new_safes:
                     if safe_cell not in self.safes:
                         self.mark_safe(safe_cell)
-            
+            if sentence.known_mines():
+                for mine_cell in sentence.known_mines():
+                    self.mark_mine(mine_cell)
         # 5) add any new sentences to the AI's knowledge base
         # if they can be inferred from existing knowledge
         # If, based on any of the sentences in self.knowledge, new sentences can be inferred
